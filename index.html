@@ -5,24 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Al Hleileh</title>
 <meta name="description" content="Al Hleileh is the Co-Founder and CEO of Civic Marketplace.">
+<script>
+(function () {
+  var t = null;
+  try { t = localStorage.getItem('theme'); } catch (e) {}
+  var q = /[?&]theme=(dark|light)/.exec(location.search);
+  if (q) { t = q[1]; }
+  if (!t) { t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 <style>
-  :root { color-scheme: light; }
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --meta: #6b6b6b;
+    --link-line: #b9b9b9;
+    --toggle-line: #8a8a8a;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #1f1e1d;
+    --text: #f0eee6;
+    --meta: #a8a49b;
+    --link-line: #5c5952;
+    --toggle-line: #7a766d;
+  }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     padding: 56px 24px 96px;
-    background: #ffffff;
-    color: #1a1a1a;
+    background: var(--bg);
+    color: var(--text);
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 17px;
     line-height: 1.65;
+    transition: background 0.15s ease, color 0.15s ease;
   }
   main { max-width: 640px; margin: 0 auto; }
+  .top { display: flex; align-items: flex-start; justify-content: space-between; margin: 0 0 40px; }
   h1 {
     font-size: 36px;
     font-weight: 600;
     letter-spacing: -0.01em;
-    margin: 0 0 40px;
+    margin: 0;
   }
   h2 {
     font-size: 20px;
@@ -32,14 +59,43 @@
   p { margin: 0 0 20px; }
   ul { margin: 0; padding-left: 22px; }
   li { margin: 0 0 10px; }
-  a { color: #1a1a1a; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #b9b9b9; }
-  a:hover { text-decoration-color: #1a1a1a; }
-  .meta { color: #6b6b6b; }
+  a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--link-line); }
+  a:hover { text-decoration-color: var(--text); }
+  .meta { color: var(--meta); }
+  .theme-toggle { display: inline-block; margin-top: 10px; cursor: pointer; }
+  .theme-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .theme-toggle .track {
+    display: block;
+    width: 40px;
+    height: 22px;
+    border: 1.5px solid var(--toggle-line);
+    border-radius: 11px;
+    position: relative;
+    background: transparent;
+  }
+  .theme-toggle .knob {
+    position: absolute;
+    top: 2.5px;
+    left: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--text);
+    transition: left 0.15s ease;
+  }
+  .theme-toggle input:checked + .track .knob { left: 20px; }
+  .theme-toggle input:focus-visible + .track { outline: 2px solid var(--text); outline-offset: 2px; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Al Hleileh</h1>
+  <div class="top">
+    <h1>Al Hleileh</h1>
+    <label class="theme-toggle">
+      <input type="checkbox" id="theme-toggle" aria-label="Dark mode">
+      <span class="track"><span class="knob"></span></span>
+    </label>
+  </div>
 
   <p>Al Hleileh is the Co-Founder and CEO of <a href="https://www.civicmarketplace.com/">Civic Marketplace</a>, a company rebuilding the way local government buys: a transparent marketplace where public sector buyers can discover, evaluate and procure from a much wider pool of suppliers.</p>
   <p>In 2026 Al was an expert speaker at the <a href="https://www.snococivicassembly.org/">Snohomish County Civic Assembly on AI</a> in Washington State, the largest US local government to host a civic assembly and the first to use one for AI policy. Over three weekends, 40 randomly selected residents heard from experts, then developed recommendations for how the county should use AI.</p>
@@ -67,5 +123,16 @@
     <li><a href="https://alhleileh.medium.com/">Medium</a></li>
   </ul>
 </main>
+<script>
+(function () {
+  var cb = document.getElementById('theme-toggle');
+  cb.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+  cb.addEventListener('change', function () {
+    var t = cb.checked ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('theme', t); } catch (e) {}
+  });
+})();
+</script>
 </body>
 </html>
